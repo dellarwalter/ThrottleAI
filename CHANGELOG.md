@@ -4,7 +4,12 @@ All notable changes to **ThrottleAI** will be documented in this file.
 
 The format is based on *Keep a Changelog*, and the project adheres to *Semantic Versioning*.
 
-## [Unreleased]
+## [1.0.2] — 2026-02-23
+
+### Changed
+- **CI**: Consolidated workflow files and hardened pipeline.
+- **Docs**: Added GitHub Pages landing page (`docs/index.md`).
+- **Dependencies**: Bumped `actions/upload-artifact` to v6.
 
 ## [1.0.1] — 2026-02-14
 
