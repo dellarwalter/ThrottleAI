@@ -1,6 +1,6 @@
 {
   "name": "throttleai",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Lightweight, token-based AI governance for TypeScript",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -70,6 +70,7 @@
   },
   "files": [
     "dist",
+    "HANDBOOK.md",
     "README.md",
     "LICENSE"
   ],
