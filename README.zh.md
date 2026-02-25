@@ -17,11 +17,11 @@
   <em>A token-based lease governor for AI calls — small enough to embed anywhere, strict enough to prevent stampedes.</em>
 </p>
 
-**ThrottleAI is a zero-dependency governor for concurrency, rate, and token budgets, with adapters for fetch / OpenAI / tools / Express / Hono.**
+**ThrottleAI 是一款零依赖的速率控制工具，用于管理并发、速率和令牌预算，并提供适用于 fetch、OpenAI、工具、Express 和 Hono 的适配器。**
 
 ---
 
-## 60-second quickstart
+## 60 秒快速入门
 
 ```bash
 pnpm add throttleai
@@ -45,33 +45,33 @@ if (result.granted) {
 }
 ```
 
-That's it. The governor enforces concurrency, rate limits, and fairness. Leases auto-expire if you forget to release.
+就是这样。该工具强制执行并发、速率限制和公平性。 如果您忘记释放，租约将自动过期。
 
-## Why
+## 原因
 
-AI applications hit rate limits, blow budgets, and create stampedes. ThrottleAI sits between your code and the model call, enforcing:
+AI 应用程序会超出速率限制，耗尽预算，并造成拥堵。 ThrottleAI 位于您的代码和模型调用之间，强制执行以下内容：
 
-- **Concurrency** — cap in-flight calls with weighted slots and interactive reserve
-- **Rate** — requests/min and tokens/min with rolling windows
-- **Fairness** — no single actor monopolizes capacity
-- **Leases** — acquire before, release after, auto-expire on timeout
-- **Observability** — `snapshot()`, `onEvent`, and `formatEvent()` for debugging
+- **并发性**：使用加权槽和交互式预留来限制并发调用。
+- **速率**：每分钟请求数和每分钟令牌数，并使用滑动窗口。
+- **公平性**：防止任何单个参与者垄断资源。
+- **租约**：在获取之前，在释放之后，并在超时时自动过期。
+- **可观察性**：`snapshot()`、`onEvent` 和 `formatEvent()` 用于调试。
 
-Zero dependencies. Node.js 18+. Tree-shakeable.
+零依赖。Node.js 18+。可进行树摇优化。
 
-## Choose your limiter
+## 选择您的速率限制器
 
-| Limiter | What it caps | When to use |
-|---------|-------------|-------------|
-| **Concurrency** | Simultaneous in-flight calls | Always — this is the most important knob |
-| **Rate** | Requests per minute | When the upstream API has a documented rate limit |
-| **Token rate** | Tokens per minute | When you have a per-minute token budget |
-| **Fairness** | Per-actor share of capacity | Multi-tenant apps where one user shouldn't hog slots |
-| **Adaptive** | Auto-tuned concurrency ceiling | When upstream latency is unpredictable |
+| 速率限制器 | 它限制的内容 | 使用场景 |
+| --------- | ------------- | ------------- |
+| **Concurrency** | 并发调用数 | 始终 - 这是最重要的参数。 |
+| **Rate** | 每分钟请求数 | 当上游 API 具有已记录的速率限制时。 |
+| **Token rate** | 每分钟令牌数 | 当您有每分钟的令牌预算时。 |
+| **Fairness** | 每个参与者的资源份额 | 多租户应用程序，其中一个用户不应占用过多资源。 |
+| **Adaptive** | 自动调整的并发上限 | 当上游延迟不可预测时。 |
 
-Start with concurrency. Add rate only if needed. See the [tuning cheatsheet](docs/tuning-cheatsheet.md) for scenario-based guidance.
+首先设置并发性。 仅在需要时添加速率限制。 请参阅[调整指南](docs/tuning-cheatsheet.md)，其中包含基于场景的建议。
 
-## Presets
+## 预设配置
 
 ```ts
 import { presets } from "throttleai";
@@ -89,9 +89,9 @@ createGovernor(presets.aggressive());
 createGovernor({ ...presets.balanced(), leaseTtlMs: 30_000 });
 ```
 
-## Common patterns
+## 常见模式
 
-### Server endpoint: 429 vs queue
+### 服务器端点：429 错误 vs 队列
 
 ```ts
 // Option A: immediate deny with 429
@@ -106,7 +106,7 @@ const result = await withLease(gov, request, fn, {
 });
 ```
 
-### UI interactive vs background
+### UI 交互 vs 后台任务
 
 ```ts
 // User-facing chat gets priority
@@ -116,9 +116,9 @@ gov.acquire({ actorId: "user", action: "chat", priority: "interactive" });
 gov.acquire({ actorId: "pipeline", action: "embed", priority: "background" });
 ```
 
-With `interactiveReserve: 2`, background tasks are blocked when only 2 slots remain, keeping those for interactive requests.
+使用 `interactiveReserve: 2` 时，当仅剩 2 个槽时，后台任务将被阻止，这些槽保留用于交互式请求。
 
-### Streaming calls
+### 流式调用
 
 ```ts
 const decision = gov.acquire({ actorId: "user", action: "stream" });
@@ -136,9 +136,9 @@ try {
 }
 ```
 
-Acquire once, release once — the lease holds for the entire stream duration.
+获取一次，释放一次——租约在整个流的持续时间内有效。
 
-### Observability: see why it throttles
+### 可观察性：查看其限制的原因
 
 ```ts
 import { createGovernor, formatEvent, formatSnapshot } from "throttleai";
@@ -154,7 +154,7 @@ console.log(formatSnapshot(gov.snapshot()));
 // concurrency=3/5 rate=12/60 leases=3
 ```
 
-## Configuration
+## 配置
 
 ```ts
 createGovernor({
@@ -189,11 +189,11 @@ createGovernor({
 
 ### `createGovernor(config): Governor`
 
-Factory function. Returns a `Governor` instance.
+工厂函数。 返回一个 `Governor` 实例。
 
 ### `governor.acquire(request): AcquireDecision`
 
-Request a lease. Returns:
+请求租约。 返回：
 
 ```ts
 // Granted
@@ -203,15 +203,15 @@ Request a lease. Returns:
 { granted: false, reason, retryAfterMs, recommendation, limitsHint? }
 ```
 
-Deny reasons: `"concurrency"` | `"rate"` | `"budget"` | `"policy"`
+拒绝原因：`"concurrency"` | `"rate"` | `"budget"` | `"policy"`
 
 ### `governor.release(leaseId, report?): void`
 
-Release a lease. Always call this — even on errors.
+释放租约。 始终调用此方法——即使在发生错误时。
 
 ### `withLease(governor, request, fn, options?)`
 
-Execute `fn` under a lease with automatic release.
+在租约下执行 `fn`，并在完成后自动释放。
 
 ```ts
 withLease(gov, request, fn, {
@@ -226,13 +226,13 @@ withLease(gov, request, fn, {
 
 ### `governor.snapshot(): GovernorSnapshot`
 
-Point-in-time state: concurrency, rate, tokens, last deny.
+当前状态：并发性、速率、令牌数、上次拒绝。
 
 ### `formatEvent(event): string` / `formatSnapshot(snap): string`
 
-One-line human-readable formatters.
+单行、易于阅读的格式化器。
 
-### Status getters
+### 状态获取器
 
 ```ts
 gov.activeLeases         // active lease count
@@ -244,21 +244,21 @@ gov.tokenRateCount       // tokens in current window
 
 ### `governor.dispose(): void`
 
-Stop the TTL reaper. Call on shutdown.
+停止 TTL 清理器。 在关闭时调用。
 
-## Adapters
+## 适配器
 
-Tree-shakeable wrappers — import only what you use. No runtime deps.
+可进行树摇优化的包装器——仅导入您使用的内容。 没有运行时依赖。
 
-| Adapter | Import | Auto-reports |
-|---------|--------|-------------|
-| **fetch** | `throttleai/adapters/fetch` | outcome (from HTTP status) + latency |
-| **OpenAI** | `throttleai/adapters/openai` | outcome + latency + token usage |
-| **Tool** | `throttleai/adapters/tools` | outcome + latency + custom weight |
-| **Express** | `throttleai/adapters/express` | outcome (from `res.statusCode`) + latency |
-| **Hono** | `throttleai/adapters/hono` | outcome + latency |
+| 适配器 | 导入 | 自动报告 |
+| --------- | -------- | ------------- |
+| **fetch** | `throttleai/adapters/fetch` | 结果（来自 HTTP 状态码）+ 延迟 |
+| **OpenAI** | `throttleai/adapters/openai` | 结果 + 延迟 + 令牌使用量 |
+| **Tool** | `throttleai/adapters/tools` | 结果 + 延迟 + 自定义权重 |
+| **Express** | `throttleai/adapters/express` | 结果（来自 `res.statusCode`）+ 延迟 |
+| **Hono** | `throttleai/adapters/hono` | 结果 + 延迟 |
 
-All adapters return `{ ok: true, result, latencyMs }` on grant, `{ ok: false, decision }` on deny.
+所有适配器在授权时返回 `{ ok: true, result, latencyMs }`，在拒绝时返回 `{ ok: false, decision }`。
 
 ### fetch
 
@@ -269,7 +269,7 @@ const r = await throttledFetch("https://api.example.com/v1/chat");
 if (r.ok) console.log(r.response.status);
 ```
 
-### OpenAI-compatible
+### 与 OpenAI 兼容
 
 ```ts
 import { wrapChatCompletions } from "throttleai/adapters/openai";
@@ -278,7 +278,7 @@ const r = await chat({ model: "gpt-4", messages });
 if (r.ok) console.log(r.result.choices[0].message.content);
 ```
 
-### Tool call
+### 工具调用
 
 ```ts
 import { wrapTool } from "throttleai/adapters/tools";
@@ -295,7 +295,7 @@ app.use("/ai", throttleMiddleware({ governor: gov }));
 // 429 + Retry-After header + JSON body on deny
 ```
 
-See [`examples/express-adaptive/`](examples/express-adaptive/) for a full runnable server with adaptive tuning.
+请参考 [`examples/express-adaptive/`](examples/express-adaptive/) 目录，了解一个完整的可运行服务器，该服务器具有自适应调整功能。
 
 ### Hono
 
@@ -305,51 +305,51 @@ app.use("/ai/*", throttle({ governor: gov }));
 // 429 JSON on deny, leaseId stored on context
 ```
 
-## Docs
+## 文档
 
-| Document | What it covers |
-|----------|---------------|
-| [Tuning cheatsheet](docs/tuning-cheatsheet.md) | Scenario-based config guide, decision tree, knob reference |
-| [Troubleshooting](docs/troubleshooting.md) | Common issues: always denied, stalls, adaptive oscillation |
-| [Release manifest](docs/release-manifest.md) | Release process and artifact details |
-| [Repo hygiene](docs/repo-hygiene.md) | Asset policy and history rewrite log |
+| 文档 | 内容概要 |
+| ---------- | --------------- |
+| [Tuning cheatsheet](docs/tuning-cheatsheet.md) | 基于场景的配置指南、决策树、参数参考 |
+| [Troubleshooting](docs/troubleshooting.md) | 常见问题：始终被拒绝、系统卡顿、自适应震荡 |
+| [Release manifest](docs/release-manifest.md) | 发布流程和构建包详情 |
+| [Repo hygiene](docs/repo-hygiene.md) | 资源策略和历史重写日志 |
 
-## Tuning quick reference
+## 参数快速参考
 
-| You see this | Adjust this |
+| 您会看到这个 | 调整这个 |
 |---|---|
-| `reason: "concurrency"` | Increase `maxInFlight` or decrease call duration |
-| `reason: "rate"` | Increase `requestsPerMinute` / `tokensPerMinute` |
-| `reason: "policy"` (fairness) | Lower `softCapRatio` or increase `maxInFlight` |
-| High `retryAfterMs` | Reduce `leaseTtlMs` so expired leases free faster |
-| Background tasks starved | Increase `maxInFlight` or reduce `interactiveReserve` |
-| Interactive latency high | Increase `interactiveReserve` |
-| Adaptive shrinks too fast | Lower `alpha` or raise `targetDenyRate` |
+| `reason: "concurrency"` | 增加 `maxInFlight` 或减少调用时长 |
+| `reason: "rate"` | 增加 `requestsPerMinute` / `tokensPerMinute` |
+| `reason: "policy"` (公平性) | 降低 `softCapRatio` 或增加 `maxInFlight` |
+| `retryAfterMs` 值过高 | 减少 `leaseTtlMs`，以便过期的租约更快释放 |
+| 后台任务被阻塞 | 增加 `maxInFlight` 或减少 `interactiveReserve` |
+| 交互式延迟过高 | 增加 `interactiveReserve` |
+| 自适应调整速度过快 | 降低 `alpha` 或提高 `targetDenyRate` |
 
-For deeper guidance, see the [tuning cheatsheet](docs/tuning-cheatsheet.md).
+如需更详细的指导，请参阅 [参数优化技巧](docs/tuning-cheatsheet.md)。
 
-## Examples
+## 示例
 
-See [`examples/`](examples/) for runnable demos:
+请参考 [`examples/`](examples/) 目录，了解可运行的演示示例：
 
-- **[express-adaptive/](examples/express-adaptive/)** — full Express server with adaptive tuning + load generator
-- **[node-basic.ts](examples/node-basic.ts)** — burst simulation with snapshot printing
-- **[express-middleware.ts](examples/express-middleware.ts)** — 429 + retry-after endpoint
-- **[cookbook-adapters.ts](examples/cookbook-adapters.ts)** — all five adapters in action
-- **[cookbook-burst-snapshot.ts](examples/cookbook-burst-snapshot.ts)** — burst load with governor snapshots
-- **[cookbook-interactive-reserve.ts](examples/cookbook-interactive-reserve.ts)** — interactive vs background priority
-- **[cookbook-express-429.ts](examples/cookbook-express-429.ts)** — 429 vs queue retry pattern
+- **[express-adaptive/](examples/express-adaptive/)** — 完整的 Express 服务器，具有自适应调整功能 + 负载生成器
+- **[node-basic.ts](examples/node-basic.ts)** — 带有快照打印的突发模拟
+- **[express-middleware.ts](examples/express-middleware.ts)** — 429 + retry-after 接口
+- **[cookbook-adapters.ts](examples/cookbook-adapters.ts)** — 所有五个适配器的实际应用
+- **[cookbook-burst-snapshot.ts](examples/cookbook-burst-snapshot.ts)** — 带有治理快照的突发负载
+- **[cookbook-interactive-reserve.ts](examples/cookbook-interactive-reserve.ts)** — 交互式与后台优先级
+- **[cookbook-express-429.ts](examples/cookbook-express-429.ts)** — 429 与队列重试模式
 
 ```bash
 npx tsx examples/node-basic.ts
 ```
 
-## Stability
+## 稳定性
 
-ThrottleAI follows [Semantic Versioning](https://semver.org/). The public API — everything exported from `throttleai` and `throttleai/adapters/*` — is **stable** as of v1.0.0. Breaking changes require a major version bump.
+ThrottleAI 遵循 [语义版本控制](https://semver.org/)。公共 API — 从 `throttleai` 和 `throttleai/adapters/*` 导出的所有内容 — 从 v1.0.0 开始，**稳定**。 破坏性更改需要进行主版本升级。
 
-For details on what's considered public vs internal, see [API stability](docs/api-stability.md). For security reporting, see [SECURITY.md](.github/SECURITY.md).
+有关公共 API 与内部 API 的详细信息，请参阅 [API 稳定性](docs/api-stability.md)。 如有安全漏洞报告，请参阅 [SECURITY.md](.github/SECURITY.md)。
 
-## License
+## 许可证
 
 MIT

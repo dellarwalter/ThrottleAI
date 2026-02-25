@@ -15,3 +15,5 @@ ENUM_SERIALIZATION_AUDIT.md
 # Large binary guardrails — assets belong in GitHub Releases
 *.zip
 design_src/
+site/.astro/
+site/node_modules/
